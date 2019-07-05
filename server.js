@@ -9,6 +9,8 @@ let app = express();
 require('./models/models')(wagner);
 
 const user = require('./routers/user.router')(wagner);
+const brand = require('./routers/brand.router')(wagner);
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -25,5 +27,7 @@ app.use(function(req, res, next) {
 const urlBase = "/api/v1/";
 
 app.use(urlBase+'usuarios',user);
+app.use(urlBase+'brands',brand);
+
 
 module.exports = app;

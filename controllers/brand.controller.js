@@ -2,12 +2,12 @@ const http = require('http');
 const path = require('path');
 const status = require('http-status');
 
-let _user;
+let _brand;
 
-const createUser = (req, res) => {
-    const user = req.body;
+const createBrand = (req, res) => {
+    const brand = req.body;
 
-    _user.create(user)
+    _brand.create(brand)
         .then((data)=> {
             res.status(200);
             res.json({msg:"Usuario creado correctamente", data: data});
@@ -18,8 +18,8 @@ const createUser = (req, res) => {
         })
 }
 
-const findAll = (req, res) => {
-    _user.find()
+const findAllB = (req, res) => {
+    _brand.find()
         .then ((data) =>{
             if(data.length==0){
                 res.status(status.NO_CONTENT);
@@ -36,12 +36,12 @@ const findAll = (req, res) => {
         });
 }
 
-const findUne = (req, res) => {
+const findUneB = (req, res) => {
     const {id}=req.params;
     const params = {
         _id:id
     };
-    _user.findOne(params)
+    _brand.findOne(params)
         .then((data) =>{
             res.status(status.OK);
             res.json({msg:"Exito!!!",data:data});
@@ -52,13 +52,13 @@ const findUne = (req, res) => {
         });
 }
 
-const deleteByID = (req,res) =>{
+const deleteByIDB = (req,res) =>{
     const {id} = req.params;
 
     const params={
         _id:id
     };
-    _user.findByIdAndRemove(params)
+    _brand.findByIdAndRemove(params)
         .then((data) =>{
                 res.status(status.OK);
                 res.json({msg:"Exito!!!",data:data});
@@ -69,15 +69,15 @@ const deleteByID = (req,res) =>{
         });
 }
 
-const updateById = (req,res) =>{
+const updateByIdB = (req,res) =>{
     const {id} = req.params;
-    const user = req.body;
+    const brand = req.body;
 
     const params = {
         _id:id
     }
     
-    _user.findByIdAndUpdate(params,user)
+    _brand.findByIdAndUpdate(params,brand)
         .then((data)=>{
             res.status(status.OK);
             res.json({msg:"Update correcto",data:data});
@@ -88,37 +88,13 @@ const updateById = (req,res) =>{
         })
 }
 
-const login = (req , res) => {
-    const {name,password} = req.params;
-    const params ={
-        name:name,
-        password:password
-    }
-    _user.findOne(params)
-    .then((data) => {
-        res.status(status.NO_CONTENT);
-        if(data.length == 0){
-            res.status(status.NO_CONTENT);
-            res.json({msg:"No se encontro al usuarios"});
-        }else{
-            res.status(status.OK);
-            res.json({msg:"Usuario encontrado!",data:data});
-        }
-    })
-    .catch((err)=>{
-        res.status(status.BAD_REQUEST);
-        res.json({msg:"Error de usuario o contraseña!!!"});
-    })
-}
-
-module.exports = (User) => {
-    _user = User;
+module.exports = (Brand) => {
+    _brand = Brand;
     return({
-        createUser,
-        findAll,
-        deleteByID,
-        updateById,
-        findUne,
-        login
+        createBrand,
+        findAllB,
+        findUneB,
+        deleteByIDB,
+        updateByIdB
     });
 }

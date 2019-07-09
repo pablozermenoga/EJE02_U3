@@ -20,8 +20,12 @@ module.exports = (wagner) => {
     router.put('/:id', (req, res) =>
         userCtrl.updateById(req,res))
     
-    router.get('/:name/:password',(req,res)=>
+    router.get('/login/:email/:password',(req,res)=>
         userCtrl.login(req,res));
+    
+    router.post('/insertaruser', (req, res) =>
+        userCtrl.CreateUserCSV(req, res));
+
         
     return router;
 }

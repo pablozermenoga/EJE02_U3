@@ -1,6 +1,9 @@
 const http = require('http');
 const path = require('path');
 const status = require('http-status');
+const jwt = require ('jsonwebtoken');
+const _config = require('../_config');
+
 
 let _user;
 
@@ -36,7 +39,7 @@ const findAll = (req, res) => {
         });
 }
 
-const findUne = (req, res) => {
+const findOne = (req, res) => {
     const {id}=req.params;
     const params = {
         _id:id
@@ -89,27 +92,62 @@ const updateById = (req,res) =>{
 }
 
 const login = (req , res) => {
-    const {name,password} = req.params;
-    const params ={
-        name:name,
-        password:password
-    }
-    _user.findOne(params)
-    .then((data) => {
-        res.status(status.NO_CONTENT);
-        if(data.length == 0){
-            res.status(status.NO_CONTENT);
-            res.json({msg:"No se encontro al usuarios"});
-        }else{
+    const {email,password} = req.params;
+    let query = {email:email,password:password};
+    _user.findOne(query,"-password")
+    .then((user) => {
+        if(user){
+            const token = jwt.sign({email:email},_config.SECRETJWT);
             res.status(status.OK);
-            res.json({msg:"Usuario encontrado!",data:data});
+            res.json({
+            msg:"acceso exitoso",
+            data:{
+                user:user,
+                token:token
+            }
+             });
+        } else{
+            res.status(status.NOT_FOUND);
+            res.json({msg:"error"})
         }
     })
     .catch((err)=>{
         res.status(status.BAD_REQUEST);
-        res.json({msg:"Error de usuario o contraseña!!!"});
+        res.json({msg:"NO SE ENCOTNRO!!!"});
+    });
+};
+//--CODIGO .CSV
+const csvFilePath='C:\\Users\\Pc\\Desktop\\aplicaciones empresariales\\U_3\\eje02_tarea\\datos2.csv'
+const csv=require('csvtojson');
+
+
+const CreateUserCSV= async (req, res) => {
+    csv()
+    .fromFile(csvFilePath).then((jsonObj)=>{
+        res.status(402);
+        console.log(jsonObj);
+        _user.create(jsonObj)
+        .then((jsonObj)=> {
+            
+            res.status(200);
+            res.json({msg:"USUARIOS CREADOS ", jsonObj: jsonObj});
+        
+        })
+        .catch((err)=> {
+            
+            res.status(400);
+            res.json({msg:"ERROR AL CREAR LOS USARIOS", data:err});
+       
+        })
+    }).catch((err) => {
+        
+        res.status(402);
     })
+    const jsonArray= await csv().fromFile(csvFilePath);
 }
+//----------------------------------------
+
+
 
 module.exports = (User) => {
     _user = User;
@@ -118,7 +156,8 @@ module.exports = (User) => {
         findAll,
         deleteByID,
         updateById,
-        findUne,
-        login
+        findOne,
+        login,
+        CreateUserCSV
     });
 }

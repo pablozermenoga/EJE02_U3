@@ -117,7 +117,7 @@ const login = (req , res) => {
     });
 };
 //--CODIGO .CSV
-const csvFilePath='C:\\Users\\Pc\\Desktop\\aplicaciones empresariales\\U_3\\eje02_tarea\\datos2.csv'
+const csvFilePath='C:\\Users\\Pc\\Desktop\\aplicaciones empresariales\\U_3\\eje02_u3\\datos2.csv'
 const csv=require('csvtojson');
 
 
